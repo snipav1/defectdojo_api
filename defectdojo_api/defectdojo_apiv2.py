@@ -122,8 +122,8 @@ class DefectDojoAPIv2(object):
 
     def create_engagement(self, name, product_id, lead_id, status, target_start, target_end, active='True',
         pen_test='False', check_list='False', threat_model='False', risk_path="",test_strategy="", progress="",
-        done_testing='False', engagement_type="CI/CD", build_id=None, commit_hash=None, branch_tag=None, build_server=None,
-        source_code_management_server=None, source_code_management_uri=None, orchestration_engine=None, description=None, deduplication_on_engagement=True):
+        done_testing='False', engagement_type="CI/CD", tags=None, reason=None, tracker=None, first_contacted=None, build_id=None, commit_hash=None, branch_tag=None,
+        build_server=None, source_code_management_server=None, source_code_management_uri=None, orchestration_engine=None, description=None, deduplication_on_engagement=True):
         """Creates an engagement with the given properties.
 
         :param name: Engagement name.
@@ -140,6 +140,10 @@ class DefectDojoAPIv2(object):
         :param test_strategy: Test Strategy URLs
         :param progress: Engagement progresss measured in percent.
         :param engagement_type: Interactive or CI/CD
+        :param tags: List of Tags
+        :param reason: Reason for engagement
+        :param tracker: Tracker URI
+        :param first_contacted: Time of first contact
         :param build_id: Build id from the build server
         :param commit_hash: Commit hash from source code management
         :param branch_tag: Branch or tag from source code management
@@ -181,6 +185,18 @@ class DefectDojoAPIv2(object):
         if branch_tag:
             data.update({'branch_tag': branch_tag})
 
+        if tags:
+            data.update({'tags': tags})
+
+        if reason:
+            data.update({'reason': reason})
+
+        if tracker:
+            data.update({'tracker': tracker})
+
+        if first_contacted:
+            data.update({'first_contacted': first_contacted})
+
         if build_server:
             data.update({'build_server': build_server})
 
@@ -209,7 +225,8 @@ class DefectDojoAPIv2(object):
 
     def set_engagement(self, id, product_id=None, lead_id=None, name=None, status=None, target_start=None,
         target_end=None, active=None, pen_test=None, check_list=None, threat_model=None, risk_path=None,
-        test_strategy=None, progress=None, done_testing=None, engagement_type="CI/CD", build_id=None, commit_hash=None, branch_tag=None, build_server=None,
+        test_strategy=None, progress=None, done_testing=None, engagement_type="CI/CD", tags=None, reason=None, tracker=None, first_contacted=None,
+        build_id=None,commit_hash=None, branch_tag=None, build_server=None,
         source_code_management_server=None, source_code_management_uri=None, orchestration_engine=None, description=None):
 
         """Updates an engagement with the given properties.
@@ -230,6 +247,10 @@ class DefectDojoAPIv2(object):
         :param progress: Engagement progresss measured in percent.
         :param engagement_type: Interactive or CI/CD
         :param build_id: Build id from the build server
+        :param tags: List of Tags
+        :param reason: Reason for engagement
+        :param tracker: Tracker URI
+        :param first_contacted: Time of first contact
         :param commit_hash: Commit hash from source code management
         :param branch_tag: Branch or tag from source code management
         :param build_server: Tool Configuration id of build server
@@ -281,6 +302,21 @@ class DefectDojoAPIv2(object):
 
         if done_testing:
             data['done_testing'] = done_testing
+
+        if tags:
+            data['tags'] = tags
+
+        if reason:
+            data['reason'] = reason
+
+        if tracker:
+            data['tracker'] = tracker
+
+        if first_contacted:
+            data['first_contacted'] = first_contacted
+
+        if branch_tag:
+            data['branch_tag'] = branch_tag
 
         return self._request('PATCH', 'engagements/' + str(id) + '/', data=data)
 
@@ -718,7 +754,7 @@ class DefectDojoAPIv2(object):
 
         with open(file, 'rb') as f:
              filedata = f.read()
-        
+
         if self.debug:
             print("filedata:")
             print(filedata)
